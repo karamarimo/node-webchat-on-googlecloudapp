@@ -1,0 +1,52 @@
+{
+  "name": "nodejs-webchat-on-googlecloudapp",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./src/server.js",
+    "start-proxy": "~/Downloads/cloud_sql_proxy -instances='stoked-depth-167511:asia-northeast1:mysql-instance'=tcp:3306",
+    "init-cloudsql": "node ./src/books/model-cloudsql.js",
+    "build": "webpack"
+  },
+  "semistandard": {
+    "globals": [
+      "after",
+      "afterEach",
+      "before",
+      "beforeEach",
+      "describe",
+      "it"
+    ]
+  },
+  "dependencies": {
+    "axios": "^0.16.2",
+    "body-parser": "~1.17.1",
+    "bootstrap": "^3.3.7",
+    "express": "~4.15.2",
+    "jquery": "^3.2.1",
+    "lodash": "~4.17.4",
+    "mysql": "~2.13.0",
+    "nconf": "~0.8.4",
+    "prompt": "~1.0.0",
+    "vue": "^2.3.4",
+    "vue-router": "^2.6.0",
+    "vuex": "^2.3.1"
+  },
+  "devDependencies": {
+    "ava": "~0.19.1",
+    "babel-core": "^6.25.0",
+    "babel-loader": "^7.1.0",
+    "babel-preset-env": "^1.5.2",
+    "css-loader": "^0.28.4",
+    "nodejs-repo-tools": "git+https://git@github.com/GoogleCloudPlatform/nodejs-repo-tools.git",
+    "proxyquire": "^1.8.0",
+    "sinon": "^2.3.5",
+    "tap-dot": "~1.0.5",
+    "vue-loader": "^12.2.1",
+    "vue-template-compiler": "^2.3.4",
+    "webpack": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=4.3.2"
+  }
+}

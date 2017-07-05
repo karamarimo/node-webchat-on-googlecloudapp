@@ -1,19 +1,20 @@
+'use strict';
+
 const express = require('express');
 const path = require('path');
-
-const port = 8080;
+const config = require('./config');
 
 const app = express();
 
 app.get('/', function(req, res) {
-  res.sendFile(path.join(__dirname, '/index.html'));
+  res.sendFile(path.join(__dirname, '../client/index.html'));
 });
 
-app.use('/dist', express.static(path.join(__dirname, '../dist')));
-app.use('/styles', express.static(path.join(__dirname, '../node_modules/bootstrap/dist/css/')));
-app.use('/fonts', express.static(path.join(__dirname, '../node_modules/bootstrap/dist/fonts/')));
+app.use('/dist', express.static(path.join(__dirname, '../../dist')));
+app.use('/styles', express.static(path.join(__dirname, '../../node_modules/bootstrap/dist/css/')));
+app.use('/fonts', express.static(path.join(__dirname, '../../node_modules/bootstrap/dist/fonts/')));
 
-app.use('/api/books', require('./books/api'));
+app.use('/api/messages', require('./api'));
 
 // Basic 404 handler
 app.use((req, res) => {
@@ -31,9 +32,10 @@ app.use((err, req, res, next) => {
 
 if (module === require.main) {
   // Start the server
-  const server = app.listen(port, () => {
+  const server = app.listen(config.get('PORT'), () => {
     const port = server.address().port;
     console.log(`App listening on port ${port}`);
   });
 }
 
+module.exports = app;

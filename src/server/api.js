@@ -2,9 +2,10 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const messageListSize = 10;
 
 function getModel () {
-  return require('./model-cloudsql');
+  return require('./sql-model');
 }
 
 const router = express.Router();
@@ -13,12 +14,12 @@ const router = express.Router();
 router.use(bodyParser.json());
 
 /**
- * GET /api/books
+ * GET /api/messages
  *
- * Retrieve a page of books (up to ten at a time).
+ * Retrieve a page of messages (up to ten at a time).
  */
 router.get('/', (req, res, next) => {
-  getModel().list(10, req.query.pageToken, (err, entities, cursor) => {
+  getModel().list(messageListSize, req.query.pageToken, (err, entities, cursor) => {
     if (err) {
       next(err);
       return;
@@ -31,9 +32,9 @@ router.get('/', (req, res, next) => {
 });
 
 /**
- * POST /api/books
+ * POST /api/messages
  *
- * Create a new book.
+ * Create a new message.
  */
 router.post('/', (req, res, next) => {
   getModel().create(req.body, (err, entity) => {
@@ -46,12 +47,12 @@ router.post('/', (req, res, next) => {
 });
 
 /**
- * GET /api/books/:id
+ * GET /api/messages/:id
  *
- * Retrieve a book.
+ * Retrieve a message.
  */
-router.get('/:book', (req, res, next) => {
-  getModel().read(req.params.book, (err, entity) => {
+router.get('/:message', (req, res, next) => {
+  getModel().read(req.params.message, (err, entity) => {
     if (err) {
       console.error(err);
       // next(err);
@@ -62,12 +63,12 @@ router.get('/:book', (req, res, next) => {
 });
 
 /**
- * PUT /api/books/:id
+ * PUT /api/messages/:id
  *
- * Update a book.
+ * Update a message.
  */
-router.put('/:book', (req, res, next) => {
-  getModel().update(req.params.book, req.body, (err, entity) => {
+router.put('/:message', (req, res, next) => {
+  getModel().update(req.params.message, req.body, (err, entity) => {
     if (err) {
       next(err);
       return;
@@ -77,12 +78,12 @@ router.put('/:book', (req, res, next) => {
 });
 
 /**
- * DELETE /api/books/:id
+ * DELETE /api/messages/:id
  *
- * Delete a book.
+ * Delete a message.
  */
-router.delete('/:book', (req, res, next) => {
-  getModel().delete(req.params.book, (err) => {
+router.delete('/:message', (req, res, next) => {
+  getModel().delete(req.params.message, (err) => {
     if (err) {
       next(err);
       return;
@@ -92,7 +93,7 @@ router.delete('/:book', (req, res, next) => {
 });
 
 /**
- * Errors on "/api/books/*" routes.
+ * Errors on "/api/messages/*" routes.
  */
 router.use((err, req, res, next) => {
   // Format error and forward to generic error handler for logging and

@@ -11,16 +11,20 @@
     <div class="container" id="events">
       <p>Chatter</p>
       <ul>
-        <li v-for="book in messages" :key="book.id">{{ book.title }}</li>
+        <li v-for="message in messages" :key="message.id">{{ message.content }}</li>
+        <Message :message="{content: 'aa', senderName: 'iamsender', date: new Date()}"></Message>
       </ul>
     </div>
   </div>
 </template>
 
 <script>
+import Message from './Message.vue'
+
 import axios from 'axios'
 
 export default {
+  name: "Chatter",
   // Here we can register any values or collections that hold data
   // for the application
   data () {
@@ -31,20 +35,19 @@ export default {
 
   // Anything within the ready function will run when the application loads
   mounted: function () {
-    // GET /someUrl
-    axios.get('/api/messages/').then(response => {
-
-      // get body data
-      this.messages = response.data.items;
-
-    }).catch(error => {
-      // error callback
-      console.error(error);
-    });
+    // axios.get('/api/messages/').then(response => {
+    //   this.messages = response.data.items;
+    // }).catch(error => {
+    //   console.error(error);
+    // });
   },
 
   // Methods we want to use in our application are registered here
-  methods: {}
+  methods: {},
+
+  components: {
+    Message,
+  },
 }
 
 </script>

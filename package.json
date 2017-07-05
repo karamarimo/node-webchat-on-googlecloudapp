@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./src/server.js",
-    "start-proxy": "~/Downloads/cloud_sql_proxy -instances='stoked-depth-167511:asia-northeast1:mysql-instance'=tcp:3306",
-    "init-cloudsql": "node ./src/books/model-cloudsql.js",
-    "build": "webpack"
+    "start": "node ./src/server/main.js",
+    "start-proxy": "./cloud_sql_proxy -instances='stoked-depth-167511:asia-northeast1:mysql-instance'=tcp:3306",
+    "init-cloudsql": "node ./src/server/sql-model.js",
+    "build": "webpack -d",
+    "build:watch": "webpack -d --watch"
   },
   "semistandard": {
     "globals": [
@@ -23,27 +24,26 @@
     "body-parser": "~1.17.1",
     "bootstrap": "^3.3.7",
     "express": "~4.15.2",
-    "jquery": "^3.2.1",
     "lodash": "~4.17.4",
     "mysql": "~2.13.0",
+    "nodejs-repo-tools": "git+https://git@github.com/GoogleCloudPlatform/nodejs-repo-tools.git",
     "nconf": "~0.8.4",
-    "prompt": "~1.0.0",
-    "vue": "^2.3.4",
-    "vue-router": "^2.6.0",
-    "vuex": "^2.3.1"
+    "prompt": "~1.0.0"
   },
   "devDependencies": {
     "ava": "~0.19.1",
     "babel-core": "^6.25.0",
-    "babel-loader": "^7.1.0",
+    "babel-loader": "^7.1.1",
     "babel-preset-env": "^1.5.2",
     "css-loader": "^0.28.4",
-    "nodejs-repo-tools": "git+https://git@github.com/GoogleCloudPlatform/nodejs-repo-tools.git",
+    "jquery": "^3.2.1",
     "proxyquire": "^1.8.0",
     "sinon": "^2.3.5",
-    "tap-dot": "~1.0.5",
-    "vue-loader": "^12.2.1",
+    "vue": "^2.3.4",
+    "vue-loader": "^13.0.0",
+    "vue-router": "^2.7.0",
     "vue-template-compiler": "^2.3.4",
+    "vuex": "^2.3.1",
     "webpack": "^3.0.0"
   },
   "engines": {

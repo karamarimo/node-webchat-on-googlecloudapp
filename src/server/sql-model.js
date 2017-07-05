@@ -2,7 +2,7 @@
 
 const extend = require('lodash').assign;
 const mysql = require('mysql');
-const config = require('../config');
+const config = require('./config');
 
 const options = {
   user: config.get('MYSQL_USER'),
@@ -20,7 +20,7 @@ function message_list (roomId, limit, token, cb) {
   token = token ? parseInt(token, 10) : 0;
   connection.query(
     'SELECT * FROM `messages` WHERE `room_id` = ? LIMIT ? OFFSET ? ORDER BY `date` DESC',
-    [limit, token, roomId],
+    [roomId, limit, token],
     (err, results) => {
       if (err) {
         cb(err);

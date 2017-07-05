@@ -2,7 +2,8 @@ import 'bootstrap'
 
 import Vue from 'vue'
 // import store from './store'
-import Chatter from './Chatter.vue'
+
+import Chatter from './vue-components/Chatter.vue'
 
 new Vue({
   el: '#app',

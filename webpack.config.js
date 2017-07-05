@@ -2,7 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 
 module.exports = {
-  entry: './src/client-app.js',
+  entry: './src/client/app.js',
   plugins: [
         new webpack.ProvidePlugin({
            $: "jquery",
@@ -11,7 +11,7 @@ module.exports = {
     ],
   resolve: {
     alias: {
-      'Vue': 'vue/dist/vue.esm.js'
+      'Vue': 'vue/dist/vue.runtime.esm.js'
     }
   },
   module: {

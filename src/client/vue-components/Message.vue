@@ -1,14 +1,7 @@
 <template>
-  <div class="wrapper">
-    <div class="sender">
-      {{message.senderName}}
-    </div>
-    <div class="content">
-      {{message.content}}
-    </div>
-    <div class="date">
-      {{dateToString}}
-    </div>
+  <div class="message-wrapper list-group-item">
+    <h4>{{message.senderName}}<small class="pull-right">{{dateToString}}</small></h4>
+    <p class="message-content">{{message.content}}</p>
   </div>
 </template>
 
@@ -29,6 +22,8 @@ export default {
 </script>
 
 <style>
-  
+.message-wrapper {
+  border: none;
+}
 </style>
 

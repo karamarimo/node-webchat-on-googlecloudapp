@@ -2,7 +2,7 @@
   <div class="input-group">
     <input v-model="text" @keyup.enter="submit" type="text" class="form-control" placeholder="Say somethin...">
     <span class="input-group-btn">
-      <button class="btn btn-default" type="button">Go!</button>
+      <button class="btn btn-default" type="button">Bark</button>
     </span>
   </div>
 </template>

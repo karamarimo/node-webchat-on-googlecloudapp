@@ -1,20 +1,26 @@
 <template>
-  <div>
+  <div class="window-wrapper">
     <!-- navigation bar -->
-    <div class="container-fluid">
-      <nav class="navbar navbar-default">
-        <a class="navbar-brand"><i class="glyphicon glyphicon-fire"></i> Let's flame each other!!</a>
+      <nav class="navbar navbar-inverse navbar-static-top">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="#"><i class="glyphicon glyphicon-bullhorn"></i> Bark</a>
+          </div>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="#">Login</a></li>
+          </ul>
+        </div>
       </nav>
-    </div>
     
     <!-- main body of our application -->
-    <div class="container">
-      <h2>Chat here!</h2>
-      <div class="message-list">
+    <div class="container-fluid main-panel">
+      <div class="message-list" ref="list">
         <Message v-for="message in messages" :key="message.id" :message="message"></Message>
       </div>
-      <div class="bottom-panel">
-        <MessageForm @submit="sendMessage"></MessageForm>
+      <div class="panel panel-default bottom-panel">
+        <div class="panel-body">
+          <MessageForm @submit="sendMessage"></MessageForm>
+        </div>
       </div>
     </div>
   </div>
@@ -64,6 +70,12 @@ export default {
         senderName: 'Anonymous',
         date: new Date()
       })
+
+      // scroll the list to the bottom when the dom is updated
+      this.$nextTick(function () {
+        const list = this.$refs.list
+        list.scrollTop = list.scrollHeight
+      })
     }
   },
 
@@ -76,7 +88,31 @@ export default {
 </script>
 
 <style>
-.bottom-panel {
-  
+html, body {
+  height: 100%;
+}
+
+.window-wrapper {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-panel {
+  flex-shrink: 1;
+  flex-grow: 1;
+  /* overflow: hidden; */
+  display: flex;
+  flex-direction: column;
+}
+
+.message-list {
+  flex-shrink: 1;
+  flex-grow: 1;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: column;
 }
 </style>

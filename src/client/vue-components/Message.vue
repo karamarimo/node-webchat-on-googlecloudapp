@@ -1,6 +1,6 @@
 <template>
-  <div class="message-wrapper list-group-item">
-    <h4>{{message.senderName}}<small class="pull-right">{{dateToString}}</small></h4>
+  <div class="message-wrapper">
+    <strong>{{message.senderName}}</strong><small class="pull-right">{{dateToString}}</small>
     <p class="message-content">{{message.content}}</p>
   </div>
 </template>
@@ -23,7 +23,11 @@ export default {
 
 <style>
 .message-wrapper {
-  border: none;
+  /* border: none; */
+}
+
+.message-content {
+  word-wrap: break-word;
 }
 </style>
 

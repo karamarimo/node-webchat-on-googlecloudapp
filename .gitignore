@@ -5,3 +5,4 @@
 *.DS_Store
 cloud_sql_proxy
 npm-debug.log
+config.json

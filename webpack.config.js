@@ -11,7 +11,6 @@ module.exports = {
     ],
   resolve: {
     alias: {
-      'Vue': 'vue/dist/vue.runtime.esm.js'
     }
   },
   module: {

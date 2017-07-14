@@ -2,9 +2,13 @@
 
 const express = require('express');
 const path = require('path');
+const http = require('http');
+const socket = require('socket.io');
 const config = require('./config');
 
 const app = express();
+const server = http.Server(app);
+const io = socket(server);
 
 app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname, '../client/index.html'));
@@ -30,9 +34,23 @@ app.use((err, req, res, next) => {
   res.status(500).send(err.response || 'Something broke!');
 });
 
+// web socket handler
+io.on('connection', (socket) => {
+  console.log('a user connected');
+
+  socket.on('message', (msg) => {
+    console.log('message: ' + JSON.stringify(msg));
+    io.emit('message', msg)
+  });
+
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  });
+});
+
 if (module === require.main) {
   // Start the server
-  const server = app.listen(config.get('PORT'), () => {
+  server.listen(config.get('PORT'), () => {
     const port = server.address().port;
     console.log(`App listening on port ${port}`);
   });

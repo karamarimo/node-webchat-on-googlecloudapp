@@ -1,9 +1,9 @@
 <template>
-  <form>
+  <form @submit="submit">
     <div class="input-group">
       <input v-model="text" type="text" class="form-control" placeholder="Say somethin...">
       <span class="input-group-btn">
-        <button @click="submit" class="btn btn-default" type="submit">Bark</button>
+        <button class="btn btn-default" type="submit">Bark</button>
       </span>
     </div>
   </form>
@@ -18,9 +18,10 @@ export default {
     }
   },
   methods: {
-    submit: function () {
-      this.$emit('submit', this.text)
+    submit: function (event) {
+      this.$emit('msgsubmit', this.text)
       this.text = ""
+      event.preventDefault()
     }
   }
 }

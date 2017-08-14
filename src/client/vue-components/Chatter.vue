@@ -22,7 +22,7 @@
       </div>
       <div class="panel panel-default bottom-panel">
         <div class="panel-body">
-          <MessageForm @submit="sendMessage"></MessageForm>
+          <MessageForm @msgsubmit="sendMessage"></MessageForm>
         </div>
       </div>
     </div>
@@ -43,7 +43,8 @@ export default {
   data() {
     return {
       messages: [],
-      socket: null
+      socket: null,
+      token: null
     }
   },
 
@@ -60,12 +61,18 @@ export default {
     // }).catch(error => {
     //   console.error(error);
     // });
-    this.messages = [
-      { id: 0, content: 'hi i am your father', senderName: 'Truth Teller', date: new Date() },
-      { id: 1, content: 'u want me now?', senderName: 'Seducer', date: new Date() }
-    ]
+    this.messages = []
 
-    this.socket = io()
+    // socket.io instance
+    this.socket = io("http://localhost:8090")
+
+    // on receiving old messages
+    this.socket.on('old messages', (messages, token) => {
+      console.log("message received")
+      this.messages.push(...messages)
+      this.token = token
+    })
+    // on receiving a new message
     this.socket.on('message', (message) => {
       this.messages.push(message)
 
@@ -74,9 +81,10 @@ export default {
         const list = this.$refs.list
         list.scrollTop = list.scrollHeight
       })
-
     })
 
+    // request old messages when connected
+    this.socket.emit('get old messages', 0, this.token)
   },
 
   // Methods we want to use in our application are registered here

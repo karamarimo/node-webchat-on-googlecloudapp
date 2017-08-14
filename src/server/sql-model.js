@@ -76,12 +76,12 @@ function message_delete (id, cb) {
 }
 
 module.exports = {
-  createSchema: createSchema,
-  list: message_list,
-  create: message_create,
-  read: message_read,
-  update: message_update,
-  delete: message_delete
+  createSchema,
+  message_list,
+  message_create,
+  message_read,
+  message_update,
+  message_delete
 };
 
 if (module === require.main) {

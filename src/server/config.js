@@ -34,7 +34,8 @@ nconf
     MYSQL_USER: '',
     MYSQL_PASSWORD: '',
 
-    PORT: 8080
+    PORT_HTTP: 8080,
+    PORT_WEBSOCKETS: 8090
   });
 
 // Check for required settings

@@ -106,6 +106,10 @@ export default {
       }
     },
     sendMessage: function (text) {
+      if (text === null || text === '') {
+        return
+      }
+      
       const message = {
         sender_id: guestId,
         sender_name: 'Anonymous',

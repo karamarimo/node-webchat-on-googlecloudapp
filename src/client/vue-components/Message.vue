@@ -1,6 +1,6 @@
 <template>
   <div class="message-wrapper">
-    <strong>{{message.senderName}}</strong><small class="pull-right">{{dateToString}}</small>
+    <strong>{{message.sender_name}}</strong><small class="pull-right">{{dateToString}}</small>
     <p class="message-content">{{message.content}}</p>
   </div>
 </template>

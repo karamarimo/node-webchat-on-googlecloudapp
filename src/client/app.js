@@ -1,3 +1,5 @@
+'use strict';
+
 import 'bootstrap'
 
 import Vue from 'vue'

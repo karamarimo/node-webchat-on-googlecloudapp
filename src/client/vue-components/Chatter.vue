@@ -14,17 +14,23 @@
         </ul>
       </div>
     </nav>
-    
+  
     <!-- main body of our application -->
-    <div class="container-fluid main-panel">
-      <div class="message-list" ref="list">
-        <Message v-for="message in messages" :key="message.id" :message="message"></Message>
+    <div class="content">
+      <div class="left-panel">
+        <RoomList :rooms="rooms"></RoomList>
       </div>
-      <div class="panel panel-default bottom-panel">
-        <div class="panel-body">
-          <MessageForm @msgsubmit="sendMessage"></MessageForm>
+      <div class="main-panel">
+        <div class="message-list" ref="list">
+          <Message v-for="message in messages" :key="message.id" :message="message"></Message>
+        </div>
+        <div class="panel panel-default bottom-panel">
+          <div class="panel-body">
+            <MessageForm @msgsubmit="sendMessage"></MessageForm>
+          </div>
         </div>
       </div>
+    
     </div>
   </div>
 </template>
@@ -32,20 +38,23 @@
 <script>
 import Message from './Message.vue'
 import MessageForm from './MessageForm.vue'
+import RoomList from './RoomList.vue'
 
 import axios from 'axios'
 import io from 'socket.io-client'
 
 export default {
   name: "Chatter",
-  // Here we can register any values or collections that hold data
-  // for the application
-  data() {
+  data: function () {
     return {
       messages: [],
+      rooms: [],
       socket: null,
       token: null
     }
+  },
+
+  watch: {
   },
 
   computed: {
@@ -68,42 +77,53 @@ export default {
 
     // on receiving old messages
     this.socket.on('old messages', (messages, token) => {
-      console.log("message received")
-      this.messages.push(...messages)
+      console.log("old messages received")
+      this.messages = messages.reverse().concat(this.messages)
       this.token = token
+      this.scroll()
     })
     // on receiving a new message
     this.socket.on('message', (message) => {
       this.messages.push(message)
-
-      // scroll the list to the bottom when the dom is updated
-      this.$nextTick(function () {
-        const list = this.$refs.list
-        list.scrollTop = list.scrollHeight
-      })
+      this.scroll()
     })
 
-    // request old messages when connected
-    this.socket.emit('get old messages', 0, this.token)
+    this.socket.on('rooms', (rooms) => {
+      this.rooms.push(...rooms)
+    })
+
+    // request old messages and rooms
+    this.socket.emit('get old messages', 1, this.token)
+    this.socket.emit('get rooms')
   },
 
   // Methods we want to use in our application are registered here
   methods: {
     sendMessage: function (text) {
       const message = {
-        id: this.messages.length,
-        content: text,
-        senderName: 'Anonymous',
-        date: new Date()
+        sender_id: 1,
+        sender_name: 'Anonymous',
+        room_id: 1,
+        content: text
       }
 
       this.socket.emit('message', message)
+    },
+    scroll: function () {
+      // if currently at the bottom, scroll to the bottom after list is updated
+      const list = this.$refs.list
+      if (list && list.scrollTop + list.clientHeight === list.scrollHeight) {
+        this.$nextTick(function () {
+          list.scrollTop = list.scrollHeight
+        })
+      }
     }
   },
 
   components: {
     Message,
     MessageForm,
+    RoomList,
   },
 }
 
@@ -125,6 +145,21 @@ body {
   flex-direction: column;
 }
 
+.content {
+  display: flex;
+  flex-direction: row;
+  align-content: stretch;
+  height: 100%;
+}
+
+.left-panel {
+  width: 300px;
+  flex-shrink: 0;
+  flex-grow: 0;
+  margin-left: 15px;
+  margin-right: 15px;
+}
+
 .main-panel {
   flex-shrink: 1;
   flex-grow: 1;
@@ -132,15 +167,16 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+  margin-left: 15px;
+  margin-right: 15px;
 }
 
 .message-list {
   flex-shrink: 1;
   overflow: auto;
-  -webkit-overflow-scrolling: touch;
-  /* display: flex; */
-  /* justify-content: flex-end; */
-  /* flex-direction: column; */
+  /* display: flex;
+  justify-content: flex-end;
+  flex-direction: column; */
 }
 
 .bottom-panel {

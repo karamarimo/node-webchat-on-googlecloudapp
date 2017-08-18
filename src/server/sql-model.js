@@ -1,6 +1,6 @@
 'use strict';
 
-const extend = require('lodash').assign;
+const _ = require('lodash');
 const mysql = require('mysql');
 const config = require('./config');
 
@@ -16,11 +16,15 @@ if (config.get('INSTANCE_CONNECTION_NAME') && config.get('NODE_ENV') === 'produc
 
 const connection = mysql.createConnection(options);
 
-function message_list (roomId, limit, token, cb) {
-  token = token ? parseInt(token, 10) : 0;
+function message_list (room_id, limit, token, cb) {
+  token = token || 0;
   connection.query(
-    'SELECT * FROM `messages` WHERE `room_id` = ? LIMIT ? OFFSET ? ORDER BY `date` DESC',
-    [roomId, limit, token],
+    "SELECT `messages`.`id` AS `id`, `sender_id`, `room_id`, `name` AS `sender_name`, `date`, `content` \
+      FROM `messages` JOIN `accounts` \
+      WHERE `room_id` = ? AND `messages`.`sender_id` = `accounts`.`id` \
+      ORDER BY `date` DESC \
+      LIMIT ? OFFSET ?",
+    [room_id, limit, token],
     (err, results) => {
       if (err) {
         cb(err);
@@ -33,34 +37,39 @@ function message_list (roomId, limit, token, cb) {
 }
 
 function message_create (data, cb) {
+  data = _.pick(data, ['sender_id', 'room_id', 'date', 'content'])
   connection.query('INSERT INTO `messages` SET ?', data, (err, res) => {
     if (err) {
       cb(err);
       return;
     }
-    read(res.insertId, cb);
+    message_read(res.insertId, cb);
   });
 }
 
 function message_read (id, cb) {
   connection.query(
-    'SELECT * FROM `messages` WHERE `id` = ?', id, (err, results) => {
-      if (err) {
-        cb(err);
-        return;
-      }
-      if (!results.length) {
-        cb({
-          code: 404,
-          message: 'Not found'
-        });
-        return;
-      }
-      cb(null, results[0]);
-    });
+    'SELECT `messages`.`id` AS `id`, `sender_id`, `room_id`, `name` AS `sender_name`, `date`, `content` \
+      FROM `messages` JOIN `accounts` \
+      WHERE `messages`.`id` = ? AND `messages`.`sender_id` = `accounts`.`id`',
+    id, (err, results) => {
+    if (err) {
+      cb(err);
+      return;
+    }
+    if (!results.length || results.length === 0) {
+      cb({
+        code: 404,
+        message: `Message of id ${id} not found`
+      });
+      return;
+    }
+    cb(null, results[0]);
+  });
 }
 
 function message_update (id, data, cb) {
+  data = _.pick(data, ['sender_id', 'room_id', 'date', 'content'])
   connection.query(
     'UPDATE `messages` SET ? WHERE `id` = ?', [data, id], (err) => {
       if (err) {
@@ -75,13 +84,31 @@ function message_delete (id, cb) {
   connection.query('DELETE FROM `messages` WHERE `id` = ?', id, cb);
 }
 
+function room_list (limit, token, cb) {
+  token = token || 0;
+  connection.query(
+    "SELECT * FROM `rooms` \
+      LIMIT ? OFFSET ?",
+    [limit, token],
+    (err, results) => {
+      if (err) {
+        cb(err);
+        return;
+      }
+      const hasMore = results.length === limit ? token + results.length : false;
+      cb(null, results, hasMore);
+    }
+  );
+}
+
 module.exports = {
   createSchema,
   message_list,
   message_create,
   message_read,
   message_update,
-  message_delete
+  message_delete,
+  room_list
 };
 
 if (module === require.main) {
@@ -101,7 +128,7 @@ if (module === require.main) {
 }
 
 function createSchema (config) {
-  const connection = mysql.createConnection(extend({
+  const connection = mysql.createConnection(_.assign({
     multipleStatements: true
   }, config));
 

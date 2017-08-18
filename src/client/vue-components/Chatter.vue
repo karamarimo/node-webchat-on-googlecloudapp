@@ -18,7 +18,7 @@
     <!-- main body of our application -->
     <div class="content">
       <div class="left-panel">
-        <RoomList :rooms="rooms"></RoomList>
+        <RoomList :rooms="rooms" @select="selectRoom"></RoomList>
       </div>
       <div class="main-panel">
         <div class="message-list" ref="list">
@@ -43,18 +43,27 @@ import RoomList from './RoomList.vue'
 import axios from 'axios'
 import io from 'socket.io-client'
 
+const guestId = 1
+
 export default {
   name: "Chatter",
   data: function () {
     return {
       messages: [],
       rooms: [],
+      currentRoom: null,
       socket: null,
       token: null
     }
   },
 
   watch: {
+    currentRoom: function (newId, oldId) {
+      if (newId !== oldId) {
+        this.messages = []
+        this.socket.emit('get old messages', newId, null)
+      }
+    }
   },
 
   computed: {
@@ -65,13 +74,6 @@ export default {
 
   // Anything within the ready function will run when the application loads
   mounted: function () {
-    // axios.get('/api/messages/').then(response => {
-    //   this.messages = response.data.items;
-    // }).catch(error => {
-    //   console.error(error);
-    // });
-    this.messages = []
-
     // socket.io instance
     this.socket = io("http://localhost:8090")
 
@@ -84,7 +86,9 @@ export default {
     })
     // on receiving a new message
     this.socket.on('message', (message) => {
-      this.messages.push(message)
+      if (message.room_id === this.currentRoom) {
+        this.messages.push(message)
+      }
       this.scroll()
     })
 
@@ -92,18 +96,20 @@ export default {
       this.rooms.push(...rooms)
     })
 
-    // request old messages and rooms
-    this.socket.emit('get old messages', 1, this.token)
+    // request rooms
     this.socket.emit('get rooms')
   },
 
   // Methods we want to use in our application are registered here
   methods: {
+    selectRoom: function (id) {
+      this.currentRoom = id
+    },
     sendMessage: function (text) {
       const message = {
-        sender_id: 1,
+        sender_id: guestId,
         sender_name: 'Anonymous',
-        room_id: 1,
+        room_id: this.currentRoom,
         content: text
       }
 

@@ -29,6 +29,7 @@ app.use((err, req, res, next) => {
 io.on('connection', (socket) => {
   console.log('a user connected')
 
+  // when receiving a message, send it to everyone
   socket.on('message', (msg) => {
     console.log('message sent: ' + JSON.stringify(msg))
     msg.date = new Date()

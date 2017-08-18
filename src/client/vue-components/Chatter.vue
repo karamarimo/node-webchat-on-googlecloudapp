@@ -18,6 +18,7 @@
     <!-- main body of our application -->
     <div class="content">
       <div class="left-panel">
+        <h3>Rooms</h3>
         <RoomList :rooms="rooms" @select="selectRoom"></RoomList>
       </div>
       <div class="main-panel">
@@ -106,10 +107,10 @@ export default {
       }
     },
     sendMessage: function (text) {
-      if (text === null || text === '') {
+      if (text === null || text === '' || this.currentRoom === null) {
         return
       }
-      
+
       const message = {
         sender_id: guestId,
         sender_name: 'Anonymous',

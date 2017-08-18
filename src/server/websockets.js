@@ -19,8 +19,14 @@ io.on('connection', (socket) => {
         console.error(err)
         return
       }
-      io.emit('message', new_msg)
+      io.to('room' + new_msg.room_id).emit('message', new_msg)
     })
+  })
+  
+  // when a client wants to join a room
+  socket.on('join room', (id) => {
+    socket.leaveAll()
+    socket.join('room' + id)
   })
 
   socket.on('get old messages', (room_id, token) => {

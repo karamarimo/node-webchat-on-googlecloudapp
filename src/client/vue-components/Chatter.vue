@@ -58,12 +58,6 @@ export default {
   },
 
   watch: {
-    currentRoom: function (newId, oldId) {
-      if (newId !== oldId) {
-        this.messages = []
-        this.socket.emit('get old messages', newId, null)
-      }
-    }
   },
 
   computed: {
@@ -86,9 +80,10 @@ export default {
     })
     // on receiving a new message
     this.socket.on('message', (message) => {
-      if (message.room_id === this.currentRoom) {
+      console.log('message received')
+      // if (message.room_id === this.currentRoom) {
         this.messages.push(message)
-      }
+      // }
       this.scroll()
     })
 
@@ -103,7 +98,12 @@ export default {
   // Methods we want to use in our application are registered here
   methods: {
     selectRoom: function (id) {
-      this.currentRoom = id
+      if (id !== this.currentRoom) {
+        this.messages = []
+        this.socket.emit('join room', id)
+          .emit('get old messages', id, null)
+        this.currentRoom = id
+      }
     },
     sendMessage: function (text) {
       const message = {

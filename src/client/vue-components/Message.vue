@@ -1,6 +1,6 @@
 <template>
   <div class="message-wrapper">
-    <strong>{{message.sender_name}}</strong><small class="pull-right">{{dateToString}}</small>
+    <strong>{{message.sender_name}}</strong><small class="pull-right">{{localDate}}</small>
     <p class="message-content">{{message.content}}</p>
   </div>
 </template>
@@ -14,8 +14,8 @@ export default {
   },
 
   computed: {
-    dateToString: function () {
-      return this.message.date.toLocaleString()
+    localDate: function () {
+      return new Date(this.message.date).toLocaleString()
     }
   },
 }

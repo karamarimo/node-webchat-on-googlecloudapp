@@ -6,3 +6,4 @@
 cloud_sql_proxy
 npm-debug.log
 config.json
+config_gcloudsql.json

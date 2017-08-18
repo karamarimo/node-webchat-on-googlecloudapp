@@ -16,13 +16,14 @@ nconf
     'MYSQL_USER',
     'MYSQL_PASSWORD',
     'NODE_ENV',
-    'PORT'
+    'PORT_HTTP',
+    'PORT_WEBSOCKETS'
   ])
   // 3. Config file
   .file({ file: path.join(__dirname, 'config.json') })
   // 4. Defaults
   .defaults({
-    // dataBackend can be 'datastore', 'cloudsql', or 'mongodb'. Be sure to
+    // dataBackend can be 'cloudsql', or 'mysql' (local). Be sure to
     // configure the appropriate settings for each storage engine below.
     // If you are unsure, use datastore as it requires no additional
     // configuration.
@@ -39,14 +40,19 @@ nconf
   });
 
 // Check for required settings
-checkConfig('GCLOUD_PROJECT');
 
 if (nconf.get('DATA_BACKEND') === 'cloudsql') {
+  checkConfig('GCLOUD_PROJECT');
   checkConfig('MYSQL_USER');
   checkConfig('MYSQL_PASSWORD');
   if (nconf.get('NODE_ENV') === 'production') {
     checkConfig('INSTANCE_CONNECTION_NAME');
   }
+}
+
+if (nconf.get('DATA_BACKEND') === 'mysql') {
+  checkConfig('MYSQL_USER');
+  checkConfig('MYSQL_PASSWORD');
 }
 
 function checkConfig (setting) {

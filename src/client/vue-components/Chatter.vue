@@ -9,7 +9,7 @@
         </div>
         <ul class="nav navbar-nav navbar-right">
           <li>
-            <a href="#">Login</a>
+            <a href="#" @click="showPopup">Login</a>
           </li>
         </ul>
       </div>
@@ -31,7 +31,20 @@
           </div>
         </div>
       </div>
-    
+  
+    </div>
+  
+    <!-- popup login form -->
+    <div class="overlay" v-if="showLoginForm" @click="clickOverlay" ref="overlay">
+      <div class="popup-center panel panel-default">
+        <div class="panel-body">
+          <ul class="nav nav-tabs nav-justified">
+            <li role="presentation" class="active"><a href="#">Log in</a></li>
+            <li role="presentation"><a href="#">Sign up</a></li>
+          </ul>
+          <LoginForm @cancel="closePopup" @submit="login"></LoginForm>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -40,6 +53,7 @@
 import Message from './Message.vue'
 import MessageForm from './MessageForm.vue'
 import RoomList from './RoomList.vue'
+import LoginForm from './LoginForm.vue'
 
 import axios from 'axios'
 import io from 'socket.io-client'
@@ -54,7 +68,8 @@ export default {
       rooms: [],
       currentRoom: null,
       socket: null,
-      token: null
+      token: null,
+      showLoginForm: false,
     }
   },
 
@@ -83,7 +98,7 @@ export default {
     this.socket.on('message', (message) => {
       console.log('message received')
       // if (message.room_id === this.currentRoom) {
-        this.messages.push(message)
+      this.messages.push(message)
       // }
       this.scroll()
     })
@@ -128,6 +143,29 @@ export default {
           list.scrollTop = list.scrollHeight
         })
       }
+    },
+    showPopup: function () {
+      this.showLoginForm = true
+    },
+    closePopup: function () {
+      this.showLoginForm = false
+    },
+    clickOverlay: function (event) {
+      if (event.target === this.$refs.overlay) {
+        this.closePopup()
+      }
+    },
+    login: function (data) {
+      this.closePopup()
+      console.log('sending login data')
+      // TODO: let him in
+      axios.post('/api/checkpassword', data)
+        .then((result) => {
+          alert(result ? 'alright come in' : 'intruder!')
+        })
+        .catch((err) => {
+          alert('something wrong happened')
+        })
     }
   },
 
@@ -135,6 +173,7 @@ export default {
     Message,
     MessageForm,
     RoomList,
+    LoginForm,
   },
 }
 
@@ -192,5 +231,22 @@ body {
 
 .bottom-panel {
   flex-shrink: 0;
+}
+
+.overlay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.4);
+  position: fixed;
+  z-index: 10;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+}
+
+.popup-center {
+  width: 350px;
 }
 </style>

@@ -12,9 +12,9 @@ app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname, '../client/index.html'));
 });
 
-app.use('/dist', express.static(path.join(__dirname, '../../dist')));
-app.use('/styles', express.static(path.join(__dirname, '../../node_modules/bootstrap/dist/css/')));
-app.use('/fonts', express.static(path.join(__dirname, '../../node_modules/bootstrap/dist/fonts/')));
+app.use('/dist', express.static(path.join(__dirname, '../../dist')))
+// app.use('/styles', express.static(path.join(__dirname, '../../node_modules/bootstrap/dist/css/')))
+// app.use('/fonts', express.static(path.join(__dirname, '../../node_modules/bootstrap/dist/fonts/')))
 
 // app.use('/api/messages', require('./api'));
 

@@ -11,8 +11,10 @@
     "build:watch": "webpack -d --watch"
   },
   "dependencies": {
+    "bcrypt": "^1.0.2",
     "body-parser": "~1.17.1",
     "express": "^4.15.4",
+    "jsonwebtoken": "^7.4.3",
     "lodash": "~4.17.4",
     "mysql": "^2.14.1",
     "nconf": "~0.8.4",
@@ -27,6 +29,7 @@
     "babel-preset-env": "^1.6.0",
     "bootstrap": "^3.3.7",
     "concurrently": "^3.5.0",
+    "copy-webpack-plugin": "^4.0.1",
     "css-loader": "^0.28.4",
     "jquery": "^3.2.1",
     "proxyquire": "^1.8.0",

@@ -1,14 +1,25 @@
 const path = require('path');
 const webpack = require('webpack');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   entry: './src/client/app.js',
   plugins: [
-        new webpack.ProvidePlugin({
-           $: "jquery",
-           jQuery: "jquery",
-       })
-    ],
+    new webpack.ProvidePlugin({
+        $: "jquery",
+        jQuery: "jquery",
+    }),
+    new CopyWebpackPlugin([
+      {
+        from: 'node_modules/bootstrap/dist/css/bootstrap.min.css',
+        to: 'styles'
+      },
+      {
+        from: 'node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.woff2',
+        to: 'fonts'
+      }
+    ])
+  ],
   resolve: {
     alias: {
     }
@@ -35,7 +46,7 @@ module.exports = {
     ]
   },
   output: {
-    filename: 'bundle.js',
+    filename: 'js/bundle.js',
     path: path.resolve(__dirname, 'dist')
   }
 };

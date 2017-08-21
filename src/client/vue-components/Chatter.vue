@@ -39,10 +39,15 @@
       <div class="popup-center panel panel-default">
         <div class="panel-body">
           <ul class="nav nav-tabs nav-justified">
-            <li role="presentation" class="active"><a href="#">Log in</a></li>
-            <li role="presentation"><a href="#">Sign up</a></li>
+            <li role="presentation" :class="{active: curTab == 0}">
+              <a href="#" @click="curTab = 0">Insecure Log in</a>
+              </li>
+            <li role="presentation" :class="{active: curTab == 1}">
+              <a href="#" @click="curTab = 1">Insecure Sign up</a>
+              </li>
           </ul>
-          <LoginForm @cancel="closePopup" @submit="login"></LoginForm>
+          <LoginForm v-if="curTab == 0" @cancel="closePopup" @submit="login"></LoginForm>
+          <SignupForm v-if="curTab == 1" @cancel="closePopup" @submit="signup"></SignupForm>
         </div>
       </div>
     </div>
@@ -54,6 +59,7 @@ import Message from './Message.vue'
 import MessageForm from './MessageForm.vue'
 import RoomList from './RoomList.vue'
 import LoginForm from './LoginForm.vue'
+import SignupForm from './SignupForm.vue'
 
 import axios from 'axios'
 import io from 'socket.io-client'
@@ -70,6 +76,7 @@ export default {
       socket: null,
       token: null,
       showLoginForm: false,
+      curTab: 0,
     }
   },
 
@@ -156,15 +163,30 @@ export default {
       }
     },
     login: function (data) {
-      this.closePopup()
+      // this.closePopup()
       console.log('sending login data')
       // TODO: let him in
       axios.post('/api/checkpassword', data)
-        .then((result) => {
-          alert(result ? 'alright come in' : 'intruder!')
+        .then((response) => {
+          console.log(response.data.result === true ? 'logged in' : 'login failed')
         })
         .catch((err) => {
-          alert('something wrong happened')
+          console.log('something wrong')
+        })
+    },
+    signup: function (data) {
+      data = {
+        name: data.username,
+        password: data.password
+      }
+      console.log('sending signin data')
+      // TODO: sign up
+      axios.post('/api/signup', data)
+        .then((response) => {
+          console.log(response.data.result === true ? 'signed up' : 'signin failed')
+        })
+        .catch((err) => {
+          console.log('something wrong')
         })
     }
   },
@@ -174,6 +196,7 @@ export default {
     MessageForm,
     RoomList,
     LoginForm,
+    SignupForm,
   },
 }
 
@@ -238,7 +261,7 @@ body {
   justify-content: center;
   align-items: center;
   background: rgba(0, 0, 0, 0.4);
-  position: fixed;
+  position: absolute;
   z-index: 10;
   top: 0;
   bottom: 0;

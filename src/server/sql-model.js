@@ -16,7 +16,7 @@ if (config.get('INSTANCE_CONNECTION_NAME') && config.get('NODE_ENV') === 'produc
 
 const connection = mysql.createConnection(options)
 
-module.exports = {  
+const exp = module.exports = {  
   message_list: function (room_id, limit, token, cb) {
     token = token || 0
     connection.query(
@@ -44,7 +44,7 @@ module.exports = {
         cb(err)
         return
       }
-      message_read(res.insertId, cb)
+      exp.message_read(res.insertId, cb)
     })
   },
 
@@ -112,10 +112,8 @@ module.exports = {
         cb(err)
         return
       }
-      if (!results.length || results.length === 0) {
-        cb({
-          message: `Password of username ${username} not found`
-        })
+      if (!results.length) {
+        cb(null, null)
         return
       }
       cb(null, results[0])

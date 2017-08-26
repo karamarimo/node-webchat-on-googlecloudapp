@@ -5,11 +5,18 @@
       <div class="container-fluid">
         <div class="navbar-header">
           <a class="navbar-brand" href="#">
-            <i class="glyphicon glyphicon-bullhorn"></i> Bark</a>
+            <i class="glyphicon glyphicon-bullhorn"></i> Bark
+          </a>
         </div>
         <ul class="nav navbar-nav navbar-right">
-          <li>
-            <a href="#" @click="showPopup">Login</a>
+          <li v-if="!loggedIn">
+            <a href="#" @click="showPopup">Log in</a>
+          </li>
+          <li v-if="loggedIn">
+            <p class="navbar-text">{{username}}</p>
+          </li>
+          <li v-if="loggedIn">
+            <a href="#" @click="showPopup">Log out</a>
           </li>
         </ul>
       </div>
@@ -25,13 +32,12 @@
         <div class="message-list" ref="list">
           <Message v-for="message in messages" :key="message.id" :message="message"></Message>
         </div>
-        <div class="panel panel-default bottom-panel">
+        <div v-if="loggedIn" class="panel panel-default bottom-panel">
           <div class="panel-body">
             <MessageForm @msgsubmit="sendMessage"></MessageForm>
           </div>
         </div>
       </div>
-  
     </div>
   
     <!-- popup login form -->
@@ -77,6 +83,9 @@ export default {
       token: null,
       showLoginForm: false,
       curTab: 0,
+      accessToken: null,
+      username: null,
+      loggedIn: false
     }
   },
 
@@ -163,15 +172,21 @@ export default {
       }
     },
     login: function (data) {
-      // this.closePopup()
       console.log('sending login data')
-      // TODO: let him in
-      axios.post('/api/checkpassword', data)
+      axios.post('/api/authenticate', data)
         .then((response) => {
-          console.log(response.data.result === true ? 'logged in' : 'login failed')
+          if (response.data && response.data.data && response.data.data.token) {
+            this.accessToken = response.data.data.token
+            this.username = data.username
+            this.loggedIn = true
+            this.closePopup()
+            console.log('logged in')
+          } else {
+            console.log('login failed')
+          }
         })
         .catch((err) => {
-          console.log('something wrong')
+          console.log('login error')
         })
     },
     signup: function (data) {
@@ -183,10 +198,14 @@ export default {
       // TODO: sign up
       axios.post('/api/signup', data)
         .then((response) => {
-          console.log(response.data.result === true ? 'signed up' : 'signin failed')
+          if (response.data.success === true) {
+            console.log('signed up')
+          } else {
+            console.log('signup failed')
+          }
         })
         .catch((err) => {
-          console.log('something wrong')
+          console.log('signup error')
         })
     }
   },

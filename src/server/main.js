@@ -3,10 +3,19 @@
 const express = require('express')
 const path = require('path')
 const http = require('http')
+const morgan = require('morgan')
+
 const config = require('./config')
 
 const app = express()
 const server = http.Server(app)
+
+// use morgan to log
+app.use(morgan('combined'))
+
+// WARNING: Routes order matters !!
+
+// TODO: use https
 
 app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname, '../client/index.html'))

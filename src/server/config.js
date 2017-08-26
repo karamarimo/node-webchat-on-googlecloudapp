@@ -20,7 +20,7 @@ nconf
     'PORT_WEBSOCKETS'
   ])
   // 3. Config file
-  .file({ file: path.join(__dirname, 'config.json') })
+  .file({ file: path.join(__dirname, 'config_sensitive.json') })
   // 4. Defaults
   .defaults({
     // dataBackend can be 'cloudsql', or 'mysql' (local). Be sure to
@@ -57,6 +57,6 @@ if (nconf.get('DATA_BACKEND') === 'mysql') {
 
 function checkConfig (setting) {
   if (!nconf.get(setting)) {
-    throw new Error(`You must set ${setting} as an environment variable or in config.json!`);
+    throw new Error(`You must set ${setting} as an environment variable or in config json file!`);
   }
 }

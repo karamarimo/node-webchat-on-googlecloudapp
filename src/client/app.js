@@ -1,6 +1,6 @@
 'use strict';
 
-import 'bootstrap'
+// import 'bootstrap'
 
 import Vue from 'vue'
 // import store from './store'

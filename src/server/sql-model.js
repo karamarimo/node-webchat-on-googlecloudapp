@@ -188,7 +188,7 @@ const exp = module.exports = {
         \`name\` VARCHAR(255) NOT NULL,
         \`date_created\` TIMESTAMP NOT NULL,
         \`birth\` DATE NULL,
-        PRIMARY KEY (\`id\`)
+        PRIMARY KEY (\`id\`),
         UNIQUE KEY \`name\` (\`name\`));
       CREATE TABLE IF NOT EXISTS \`chat_history\`.\`passwords\` (
         \`id\` INT UNSIGNED NOT NULL AUTO_INCREMENT,

@@ -235,6 +235,6 @@ if (module === require.main) {
     if (err) {
       return
     }
-    createSchema(result)
+    exp.createSchema(result)
   })
 }

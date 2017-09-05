@@ -124,7 +124,7 @@ const exp = module.exports = {
   account_create: function (data, cb) {
     const account_data = {
       name: data.username,
-      data_created: data.data_created,
+      date_created: data.date_created,
       birth: data.birth
     }
     const hash_data = _.pick(data, ['hash_algo', 'hash'])

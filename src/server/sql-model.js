@@ -58,7 +58,7 @@ const exp = module.exports = {
         cb(err)
         return
       }
-      if (!results.length || results.length === 0) {
+      if (!results.length) {
         cb({
           message: `Message of id ${id} not found`
         })
@@ -122,7 +122,11 @@ const exp = module.exports = {
 
   // create a account storing user data and hashed password
   account_create: function (data, cb) {
-    const account_data = _.pick(data, ['name', 'data_created', 'birth'])
+    const account_data = {
+      name: data.username,
+      data_created: data.data_created,
+      birth: data.birth
+    }
     const hash_data = _.pick(data, ['hash_algo', 'hash'])
 
     // start a transaction

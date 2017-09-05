@@ -16,7 +16,7 @@
             <p class="navbar-text">{{username}}</p>
           </li>
           <li v-if="loggedIn">
-            <a href="#" @click="showPopup">Log out</a>
+            <a href="#" @click="logout">Log out</a>
           </li>
         </ul>
       </div>
@@ -138,18 +138,17 @@ export default {
       }
     },
     sendMessage: function (text) {
-      if (text === null || text === '' || this.currentRoom === null) {
+      if (!this.loggedIn || !text || text === '' || !this.currentRoom) {
         return
       }
 
       const message = {
-        sender_id: guestId,
-        sender_name: 'Anonymous',
+        username: this.username,
         room_id: this.currentRoom,
         content: text
       }
 
-      this.socket.emit('message', message)
+      this.socket.emit('message', message, this.accessToken)
     },
     scroll: function () {
       // if currently at the bottom, scroll to the bottom after list is updated
@@ -191,7 +190,7 @@ export default {
     },
     signup: function (data) {
       data = {
-        name: data.username,
+        username: data.username,
         password: data.password
       }
       console.log('sending signin data')

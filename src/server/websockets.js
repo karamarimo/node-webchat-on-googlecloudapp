@@ -1,6 +1,7 @@
 'use strict';
 
 const socket = require('socket.io')
+const jwt = require('jsonwebtoken')
 const config = require('./config')
 const sql = require('./sql-model')
 
@@ -11,7 +12,7 @@ io.on('connection', (socket) => {
   console.log('a user connected')
 
   // when receiving a message, send it to everyone
-  socket.on('message', (msg) => {
+  socket.on('message', (msg, token) => {
     console.log('message sent: ' + JSON.stringify(msg))
     msg.date = new Date()
     sql.message_create(msg, (err, new_msg) => {
@@ -61,6 +62,16 @@ io.on('connection', (socket) => {
     console.log('user disconnected')
   })
 })
+
+function verifyToken (token, username, cb) {  
+  jwt.verify(token, config.get('JWT_SECRET_KEY'), (err, decoded) => {
+    if (err) {
+      cb(null, false)
+      return
+    }
+    cb(null, decoded.username === username)
+  })
+}
 
 if (module === require.main) {
   // Start the server

@@ -37,6 +37,7 @@ router.post('/authenticate', (req, res, next) => {
       status: "error",
       message: "authentication: username or password not provided"
     })
+    return
   }
 
   getModel().account_password_read(username, (err, entity) => {
@@ -97,7 +98,7 @@ router.post('/signup', (req, res, next) => {
   // }
 
   const data = req.body
-  if (!data.name || !data.password) {
+  if (!data.username || !data.password) {
     // TODO: return error
     res.json({
       status: "error",

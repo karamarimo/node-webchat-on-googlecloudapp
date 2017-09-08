@@ -101,7 +101,7 @@ export default {
   // Anything within the ready function will run when the application loads
   mounted: function () {
     // socket.io instance
-    this.socket = io("http://localhost:8090")
+    this.socket = io()
 
     // on receiving old messages
     this.socket.on('old messages', (messages, token) => {

@@ -5,10 +5,13 @@ const path = require('path')
 const http = require('http')
 const morgan = require('morgan')
 
+const io = require('./websockets')
+
 const config = require('./config')
 
 const app = express()
 const server = http.Server(app)
+io.attach(server)
 
 // use morgan to log
 app.use(morgan('combined'))

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "concurrently --kill-others 'node ./src/server/main.js' 'node ./src/server/websockets.js'",
+    "start": "node ./src/server/main.js",
     "start-proxy": "./cloud_sql_proxy -instances='stoked-depth-167511:asia-northeast1:mysql-instance'=tcp:3306",
     "init-cloudsql": "node ./src/server/sql-model.js",
     "build": "webpack -p",

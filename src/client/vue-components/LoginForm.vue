@@ -28,12 +28,12 @@ export default {
     cancel: function () {
       this.$emit("cancel")
     },
-    submit: function () {
+    submit: function (e) {
       this.$emit("submit", {
         username: this.username,
         password: this.password
       })
-      return false  // prevent page loading
+      e.preventDefault()  // prevent page loading
     }
   }
 }

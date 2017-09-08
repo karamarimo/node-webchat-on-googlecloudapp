@@ -38,7 +38,7 @@ export default {
     cancel: function () {
       this.$emit("cancel")
     },
-    submit: function () {
+    submit: function (e) {
       this.error = false
 
       if (this.password !== this.password2) {
@@ -51,7 +51,7 @@ export default {
         username: this.username,
         password: this.password
       })
-      return false  // prevent page loading
+      e.preventDefault()  // prevent page loading
     }
   }
 }

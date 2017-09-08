@@ -16,7 +16,7 @@ if (config.get('INSTANCE_CONNECTION_NAME') && config.get('NODE_ENV') === 'produc
 
 const connection = mysql.createConnection(options)
 
-const exp = module.exports = {  
+const exp = module.exports = {
   message_list: function (room_id, limit, token, cb) {
     token = token || 0
     connection.query(
@@ -37,14 +37,26 @@ const exp = module.exports = {
     )
   },
 
+  // data = { username, room_id, content, date }
   message_create: function (data, cb) {
-    data = _.pick(data, ['sender_id', 'room_id', 'date', 'content'])
-    connection.query('INSERT INTO `messages` SET ?', data, (err, res) => {
+    exp.account_read_by_name(data.username, (err, acc) => {
       if (err) {
         cb(err)
         return
       }
-      exp.message_read(res.insertId, cb)
+      if (!acc) {
+        cb(new Error("the username doesn't exist"))
+      }
+      
+      data = _.pick(data, ['room_id', 'date', 'content'])
+      data.sender_id = acc.id
+      connection.query('INSERT INTO `messages` SET ?', data, (err, res) => {
+        if (err) {
+          cb(err)
+          return
+        }
+        exp.message_read(res.insertId, cb)
+      })
     })
   },
 
@@ -59,6 +71,8 @@ const exp = module.exports = {
         return
       }
       if (!results.length) {
+        // TODO: delete this line
+        console.log(results)
         cb({
           message: `Message of id ${id} not found`
         })
@@ -68,21 +82,21 @@ const exp = module.exports = {
     })
   },
 
-  message_update: function (id, data, cb) {
-    data = _.pick(data, ['sender_id', 'room_id', 'date', 'content'])
-    connection.query(
-      'UPDATE `messages` SET ? WHERE `id` = ?', [data, id], (err) => {
-        if (err) {
-          cb(err)
-          return
-        }
-        read(id, cb)
-      })
-  },
+  // message_update: function (id, data, cb) {
+  //   data = _.pick(data, ['sender_id', 'room_id', 'date', 'content'])
+  //   connection.query(
+  //     'UPDATE `messages` SET ? WHERE `id` = ?', [data, id], (err) => {
+  //       if (err) {
+  //         cb(err)
+  //         return
+  //       }
+  //       read(id, cb)
+  //     })
+  // },
 
-  message_delete: function (id, cb) {
-    connection.query('DELETE FROM `messages` WHERE `id` = ?', id, cb)
-  },
+  // message_delete: function (id, cb) {
+  //   connection.query('DELETE FROM `messages` WHERE `id` = ?', id, cb)
+  // },
 
   room_list: function (limit, token, cb) {
     token = token || 0
@@ -118,6 +132,24 @@ const exp = module.exports = {
       }
       cb(null, results[0])
     })
+  },
+
+  account_read_by_name: function (name, cb) {
+    connection.query(
+      'SELECT * FROM `accounts` \
+        WHERE `name` = ?',
+      [name], (err, results) => {
+        if (err) {
+          cb(err)
+          return
+        }
+        if (!results.length) {
+          cb(null, null)
+          return
+        }
+        cb(null, results[0])
+      }
+    )
   },
 
   // create a account storing user data and hashed password

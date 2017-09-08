@@ -149,6 +149,7 @@ export default {
       }
 
       this.socket.emit('message', message, this.accessToken)
+      console.log("message sent")
     },
     scroll: function () {
       // if currently at the bottom, scroll to the bottom after list is updated
@@ -188,6 +189,11 @@ export default {
           console.log('login error')
         })
     },
+    logout: function () {
+      this.loggedIn = false
+      this.username = null
+      this.accessToken = null
+    },
     signup: function (data) {
       data = {
         username: data.username,
@@ -197,7 +203,7 @@ export default {
       // TODO: sign up
       axios.post('/api/signup', data)
         .then((response) => {
-          if (response.data.success === true) {
+          if (response.data.status === 'ok') {
             console.log('signed up')
           } else {
             console.log('signup failed')
@@ -206,7 +212,7 @@ export default {
         .catch((err) => {
           console.log('signup error')
         })
-    }
+    },
   },
 
   components: {

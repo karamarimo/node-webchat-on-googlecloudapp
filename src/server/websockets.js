@@ -12,15 +12,22 @@ io.on('connection', (socket) => {
   console.log('a user connected')
 
   // when receiving a message, send it to everyone
+  // msg = { username, room_id, content }
   socket.on('message', (msg, token) => {
-    console.log('message sent: ' + JSON.stringify(msg))
-    msg.date = new Date()
-    sql.message_create(msg, (err, new_msg) => {
-      if (err) {
-        console.error(err)
+    verifyToken(token, msg.username, (err, result) => {
+      if (err || result !== true) {
+        
         return
       }
-      io.to('room' + new_msg.room_id).emit('message', new_msg)
+      console.log('message received: ' + JSON.stringify(msg))
+      msg.date = new Date()
+      sql.message_create(msg, (err, new_msg) => {
+        if (err) {
+          console.error(err)
+          return
+        }
+        io.to('room' + new_msg.room_id).emit('message', new_msg)
+      })
     })
   })
   

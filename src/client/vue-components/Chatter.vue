@@ -120,7 +120,7 @@ export default {
     })
 
     this.socket.on('rooms', (rooms) => {
-      this.rooms.push(...rooms)
+      this.rooms = rooms
     })
 
     // request rooms
@@ -161,6 +161,7 @@ export default {
       }
     },
     showPopup: function () {
+      // TODO: focus on the first textbox
       this.showLoginForm = true
     },
     closePopup: function () {
@@ -172,6 +173,7 @@ export default {
       }
     },
     login: function (data) {
+      // TODO: show whether login succeeded/failed
       console.log('sending login data')
       axios.post('/api/authenticate', data)
         .then((response) => {
@@ -190,17 +192,18 @@ export default {
         })
     },
     logout: function () {
+      // TODO: tell the server to disable token
       this.loggedIn = false
       this.username = null
       this.accessToken = null
     },
     signup: function (data) {
+      // TODO: auto-login after sign up
       data = {
         username: data.username,
         password: data.password
       }
       console.log('sending signin data')
-      // TODO: sign up
       axios.post('/api/signup', data)
         .then((response) => {
           if (response.data.status === 'ok') {
